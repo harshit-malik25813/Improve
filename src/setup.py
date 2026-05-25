@@ -95,10 +95,12 @@ def logout():
     confirmation = input("Are you sure you want to logout, your data will be deleted unless exported(y/n)?").lower()
     if confirmation != "y" or "n":
         print("Please respond with y/Y for yes or n/N for no")
+        logout()
     if confirmation == "y":
         ans = input("Do you wish to export your progress report to CSV(y/n)?").lower()
         if ans != "y" or "n":
             print("Please respond with y/Y for yes or n/N for no")
+            logout()
         if ans == "y":
             export_data()
             no_user = {
@@ -120,3 +122,20 @@ def update_user(update):
     if update != "username" or "password":
         print("Invalid input!")
         help()
+    if update == "username":
+        confirmation = input("Are you sure you want to change your username(y/n)?").lower()
+        if confirmation != "y" or "n":
+            print("Please respond with y/Y or n/N")
+            update_user(update)
+        if confirmation == "n":
+            return
+        if confirmation == "y":
+            user_info = {
+                "user_exists" : "true",
+                "user_name" : update,
+                "password" : data_check["password"]
+            }
+            json.dump(user_info, data_check)
+            return
+
+    

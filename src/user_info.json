@@ -1,5 +1,5 @@
 {
-   "user_exists": "False",
+   "user_exists": false,
    "user_name" : "",
    "password" : ""
 }
