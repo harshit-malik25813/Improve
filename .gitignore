@@ -1,0 +1,116 @@
+
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+ENV/
+pip-wheel-metadata/
+dist/
+build/
+wheelhouse/
+coverage/
+.pytest_cache/
+htmlcov/
+*.egg-info/
+*.egg
+
+# Virtual environment folders
+/.venv
+/env/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment files
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+.local
+
+# Build outputs
+dist/
+build/
+*.class
+*.jar
+*.war
+*.ear
+
+# Java
+*.project
+*.classpath
+*.settings/
+*.factorypath
+
+# Go
+bin/
+pkg/
+
+# Rust
+target/
+
+# C/C++
+*.exe
+*.out
+*.o
+*.obj
+*.pdb
+
+# macOS-specific
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Temporary files
+*~
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Coverage and test outputs
+.coverage
+.nyc_output/
+coverage/
+
+# Misc
+*.bak
+*.orig
+*.rej
+*.so
+
+# JetBrains
+*.iml
+
+# Keep .gitignore tracked
+!.gitignore
