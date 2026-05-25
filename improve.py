@@ -8,6 +8,7 @@ args = parser.parse_args()
 # Importing defined libraries for the program
 import src.helpers
 import src.setup
+from src.help import commands
 # Importing JSON library to load and process user info
 import json
 with open("user_info.json", "r") as f:
@@ -38,3 +39,4 @@ if args.command == "setup":
 		src.setup.logout()
 	if args.setup_cmd == "update_user":
 		src.setup.update_user(args.update_field)
+help_parser = parser.add_argument("-h")
