@@ -119,10 +119,10 @@ def logout():
     if confirmation == "n":
         return
 def update_user(update):
-    if update != "username" or "password":
+    if update != "--username" or "--password":
         print("Invalid input!")
         help()
-    if update == "username":
+    if update == "--username":
         confirmation = input("Are you sure you want to change your username(y/n)?").lower()
         if confirmation != "y" or "n":
             print("Please respond with y/Y or n/N")
@@ -137,5 +137,3 @@ def update_user(update):
             }
             json.dump(user_info, data_check)
             return
-
-    

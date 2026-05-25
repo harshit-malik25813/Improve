@@ -8,7 +8,7 @@ args = parser.parse_args()
 # Importing defined libraries for the program
 import src.helpers
 import src.setup
-from src.help import commands
+from src.help import commands, help
 # Importing JSON library to load and process user info
 import json
 with open("user_info.json", "r") as f:
@@ -30,8 +30,8 @@ setup_subparser.add_parser("logout")
 setup_subparser.add_parser("login")
 update_usr = setup_subparser.add_parser("update_user")
 update_usr_subparser = update_usr.add_subparsers(dest="update_field")
-update_usr_subparser.add_parser("username")
-update_usr_subparser.add_parser("password")
+update_usr_subparser.add_parser("--username")
+update_usr_subparser.add_parser("--password")
 if args.command == "setup":
 	if args.setup_cmd == "login":
 		src.setup.login()
@@ -39,4 +39,14 @@ if args.command == "setup":
 		src.setup.logout()
 	if args.setup_cmd == "update_user":
 		src.setup.update_user(args.update_field)
-help_parser = parser.add_argument("-h")
+	else:
+		help()
+# Adding the help functionality
+help_parser = subparsers.add_parser("-h")
+help_subparser = help_parser.add_subparsers(dest="help_cmd")
+help_subparser.add_parser("--commands")
+if args.command == "help":
+	if args.help_cmd == "--commands":
+		commands()
+	else:
+		help()
