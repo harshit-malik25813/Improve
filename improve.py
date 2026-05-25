@@ -9,6 +9,7 @@ args = parser.parse_args()
 import src.helpers
 import src.setup
 from src.help import commands, help
+import src.add_project
 # Importing JSON library to load and process user info
 import json
 with open("user_info.json", "r") as f:
@@ -50,3 +51,8 @@ if args.command == "help":
 		commands()
 	else:
 		help()
+# Adding project 
+project = subparsers.add_parser("add-project")
+project_subparser = project.add_subparsers(dest="project")
+if args.command == "project":
+	src.add_project.include(args.project)
