@@ -114,3 +114,6 @@ coverage/
 
 # Keep .gitignore tracked
 !.gitignore
+# Ignoring test CSV files
+*.CSV
+*.csv

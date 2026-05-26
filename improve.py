@@ -17,7 +17,6 @@ with open("user_info.json", "r") as f:
 from src.setup import user_exists
 if user_exists == False:
 	src.helpers.first_time()
-# TODO: Add the functionality of arguements to open setup
 if user_exists == True:
 	print(f"Welcome back!, {user_info["user_name"]}")
 # Adding actual functionality for the program
