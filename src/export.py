@@ -15,6 +15,6 @@ def export_data():
         destination_folder.mkdir(parents=True, exist_ok=True)
         shutil.copy(source, destination_folder)
         print("Export was successful!")
-        print("Find your exported progress in CSV format in \n" \
+        print("Find your exported progress in CSV format in: \n" \
         f"{destination_folder.resolve()}")
         return
