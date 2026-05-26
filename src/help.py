@@ -1,6 +1,8 @@
-def help():
+def show_help():
     print("Improve")
     print("You might have entered a wrong command to get here")
-    print("to see the list of commands, press 'improve -h --commands")
+    print("To see the list of commands, run: improve --help")
+
+
 def commands():
-    print("TODO")
+    print("Available commands:\n - setup login\n - setup logout\n - setup update_user --username|--password\n - add-project <name>\n - export")

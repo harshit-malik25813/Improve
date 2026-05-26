@@ -1,57 +1,81 @@
-"""Improve"""
-"""By Harshit Malik"""
-"""Github: harshit-malik25813"""
-# Parsing Arguements
+"""Improve CLI"""
 import argparse
-parser = argparse.ArgumentParser()
-args = parser.parse_args()
-# Importing defined libraries for the program
-import src.helpers
-import src.setup
-from src.help import commands, help
-import src.add_project
-# Importing JSON library to load and process user info
 import json
-with open("user_info.json", "r") as f:
-	user_info = json.load(f)
-from src.setup import user_exists
-if user_exists == False:
-	src.helpers.first_time()
-if user_exists == True:
-	print(f"Welcome back!, {user_info["user_name"]}")
-# Adding actual functionality for the program
-# Using argparse for usage of extra arguements
-# Setting up subparser for the setup function
-subparsers = parser.add_subparsers(dest="command")
-setup_parser = subparsers.add_parser("setup")
-setup_subparser = setup_parser.add_subparsers(dest="setup_cmd")
-# Adding login, logout, and update_user
-setup_subparser.add_parser("logout")
-setup_subparser.add_parser("login")
-update_usr = setup_subparser.add_parser("update_user")
-update_usr_subparser = update_usr.add_subparsers(dest="update_field")
-update_usr_subparser.add_parser("--username")
-update_usr_subparser.add_parser("--password")
-if args.command == "setup":
-	if args.setup_cmd == "login":
-		src.setup.login()
-	if args.setup_cmd == "logout":
-		src.setup.logout()
-	if args.setup_cmd == "update_user":
-		src.setup.update_user(args.update_field)
+from pathlib import Path
+from src import helpers, add_project, setup as setup_mod
+from src.help import show_help, commands
+
+
+USER_FILE = Path("tracking") / "user_info.json"
+
+
+def _load_user():
+	if USER_FILE.exists():
+		with USER_FILE.open("r", encoding="utf-8") as f:
+			return json.load(f)
+	return {"user_exists": False, "user_name": "", "password": ""}
+
+
+def main():
+	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI")
+	subparsers = parser.add_subparsers(dest="command")
+
+	# setup
+	setup_parser = subparsers.add_parser("setup")
+	setup_sub = setup_parser.add_subparsers(dest="setup_cmd")
+	setup_sub.add_parser("login")
+	setup_sub.add_parser("logout")
+	update_parser = setup_sub.add_parser("update_user")
+	update_parser.add_argument("update_field", choices=["--username", "--password"]) 
+
+	# help
+	help_parser = subparsers.add_parser("help")
+	help_parser.add_argument("--commands", action="store_true")
+
+	# add-project
+	addp = subparsers.add_parser("add-project")
+	addp.add_argument("project_name")
+
+	# export
+	subparsers.add_parser("export")
+
+	args = parser.parse_args()
+
+	user_info = _load_user()
+	if not user_info.get("user_exists"):
+		helpers.first_time()
 	else:
-		help()
-# Adding the help functionality
-help_parser = subparsers.add_parser("-h")
-help_subparser = help_parser.add_subparsers(dest="help_cmd")
-help_subparser.add_parser("--commands")
-if args.command == "help":
-	if args.help_cmd == "--commands":
-		commands()
-	else:
-		help()
-# Adding project 
-project = subparsers.add_parser("add-project")
-project_subparser = project.add_subparsers(dest="project")
-if args.command == "project":
-	src.add_project.include(args.project)
+		print(f"Welcome back!, {user_info.get('user_name')}")
+
+	if args.command == "setup":
+		if args.setup_cmd == "login":
+			setup_mod.login()
+		elif args.setup_cmd == "logout":
+			setup_mod.logout()
+		elif args.setup_cmd == "update_user":
+			setup_mod.update_user(args.update_field)
+		else:
+			show_help()
+		return
+
+	if args.command == "help":
+		if args.commands:
+			commands()
+		else:
+			show_help()
+		return
+
+	if args.command == "add-project":
+		add_project.include(args.project_name)
+		return
+
+	if args.command == "export":
+		from src.export import export_data
+		export_data()
+		return
+
+	parser.print_help()
+
+
+if __name__ == "__main__":
+	main()

@@ -1,139 +1,140 @@
-"""Improve"""
-"""By Harshit Malik"""
-"""Github: harshit-malik25813"""
-"""Setting up user account for the first time"""
+"""User setup utilities for Improve CLI"""
 from dataclasses import dataclass
+import json
+from pathlib import Path
+import shutil
 from .export import export_data
-import json # Importing to maintain persistent storage for user info
-from .help import help
-with open("user_info", "rw") as f:
-    data_check = json.load(f)
-user_exists = data_check["user_exists"]
+from .help import show_help
+
+USER_FILE = Path("tracking") / "user_info.json"
+
+
+def _load_user_info():
+    # Do not create the file by default. Return defaults if file missing.
+    if not USER_FILE.exists():
+        return {"user_exists": False, "user_name": "", "password": ""}
+    with USER_FILE.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _write_user_info(data: dict):
+    USER_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with USER_FILE.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
+def _validate_password(pw: str) -> tuple[bool, str]:
+    if len(pw) < 8:
+        return False, "Password must be at least 8 characters"
+    if not any(c.isdigit() for c in pw):
+        return False, "Password must contain a digit"
+    special_char = "!@#$%^&*()"
+    if not any(c in special_char for c in pw):
+        return False, "Password must contain a special character"
+    if not any(c.isalpha() for c in pw):
+        return False, "Password must contain alphabetic characters"
+    if not any(c.islower() for c in pw):
+        return False, "Password must contain a lowercase character"
+    if not any(c.isupper() for c in pw):
+        return False, "Password must contain an uppercase character"
+    return True, ""
+
+
 def login():
-    def set_user(json): # Creating a function to help user log in
-        print("User Account not set")
-        # Ask user if he wishes to make a user account
-        ans = input("Do you want to set a user?(y/n)").lower()
-        if ans == "n":
-            return
-        if ans != "y":
-            print("please enter a valid input")
-            set_user(json)
-            return
-        # If user affirms to create an account
-        # Creating a dataclass to easily access user name and password
-        @dataclass
-        class User:
-            user_name: str
-            password: str
-        # Creating a reusable block of code for the signup part
-        def signup():
-            user_name = input("Username: ")
-            password = input("Password: ")
-
-            return User(user_name, password)
-        # Initialising the function
-        user = signup()
-        # Validating user name
-        # Checking the length of the user name
-        if len(user.user_name) < 4:
-            print("The length of user name should be atleast 4 characters!")
-            signup()
-        # Validating password
-        # Checking the length of the password
-        if len(user.password) < 8:
-            print("The password should atleast be 8 characters or more!")
-            signup()
-        # getting a boolean value for whether the password contains any digit
-        hasdigit = any(char.isdigit() for char in user.password)
-        # Validating presence of digits in the password
-        if not hasdigit:
-            print("Password must contain digits!")
-            signup()
-        # getting a boolean value for whether the password contains any special characters
-        special_char = "!@#$%^&*()"
-        present = any(c in special_char for c in user.password)
-        # Validating presence of special character in password
-        if not present:
-            print("Password must contain special characters")
-            signup()
-        # Getting a boolean value for whether the password contains alphabets
-        hasalpha = any(c.isalpha() for c in user.password)
-        if not hasalpha:
-            print("Password must contain alphabets")
-            signup()
-        # getting a boolean value for whether the password contains any lowercase letters
-        haslower = any(c.islower() for c in user.password)
-        # Validating the presence of lowercase characters
-        if not haslower:
-            print("Password must contain lower characters")
-            signup()
-        # Getting a boolean value for whether the user has entered some uppercase characters
-        hasupper = any(c.isupper() for c in user.password)
-        # Validating presence of uppercase characters
-        if not hasupper:
-            print("Password must contain upper characters")
-            signup()
-        # If user somehow makes it this far without getting annoyed
+    data = _load_user_info()
+    if data.get("user_exists"):
+        print(f"A user already exists. You are logged in as {data.get('user_name')}")
         return
-    # Actual function
-    # If the user comes to login when he already created a user account
-    if data_check["user_exists"] == "True":
-        print("A user already exists")
-        print(f"You have been logged in as {data_check["user_name"]}")
 
-    # Add the user info to the JSON storing the user data
-    if data_check["user_exists"] == "False":
-        set_user(data_check)
-        print("User has been set successfully!")
-        print("Log in to start your improvement journey!")
-    return
+    print("User Account not set")
+    ans = input("Do you want to set a user? (y/n): ").strip().lower()
+    if ans != "y":
+        print("Aborting user setup.")
+        return
+
+    @dataclass
+    class User:
+        user_name: str
+        password: str
+
+    while True:
+        user_name = input("Username: ").strip()
+        if len(user_name) < 4:
+            print("The length of user name should be at least 4 characters!")
+            continue
+        password = input("Password: ")
+        valid, msg = _validate_password(password)
+        if not valid:
+            print(msg)
+            continue
+        user = User(user_name, password)
+        break
+
+    new_data = {"user_exists": True, "user_name": user.user_name, "password": user.password}
+    _write_user_info(new_data)
+    print("User has been set successfully!")
+    print("Log in to start your improvement journey!")
+
+
 def logout():
-    with open("user_info.json", "r") as f:
-        user_data = json.load(f)
+    data = _load_user_info()
+    if not data.get("user_exists"):
+        print("No user is currently logged in.")
+        return
     print("Logout")
-    confirmation = input("Are you sure you want to logout, your data will be deleted unless exported(y/n)?").lower()
-    if confirmation != "y" or "n":
-        print("Please respond with y/Y for yes or n/N for no")
-        logout()
-    if confirmation == "y":
-        ans = input("Do you wish to export your progress report to CSV(y/n)?").lower()
-        if ans != "y" or "n":
-            print("Please respond with y/Y for yes or n/N for no")
-            logout()
-        if ans == "y":
-            export_data()
-            no_user = {
-                "user_exists" : "False",
-                "user_name" : "",
-                "password" : ""
-            }
-            json.dump(no_user, data_check)
-        if ans == "n":
-            no_user = {
-                "user_exists" : "False",
-                "user_name" : "",
-                "password" : ""
-            }
-            json.dump(no_user, data_check)
+    confirmation = input("Are you sure you want to logout? Your data will be deleted unless exported (y/n): ").strip().lower()
+    if confirmation not in ("y", "n"):
+        print("Please respond with y or n")
+        return
     if confirmation == "n":
         return
-def update_user(update):
-    if update != "--username" or "--password":
+
+    ans = input("Do you wish to export your progress report to CSV before logout? (y/n): ").strip().lower()
+    if ans == "y":
+        export_data()
+        # After successful export, offer to delete the tracking directory
+        try:
+            tracking_dir = USER_FILE.parent
+            if tracking_dir.exists():
+                delete_confirm = input("Export complete. Do you want to delete the tracking directory? (y/n): ").strip().lower()
+                if delete_confirm == "y":
+                    shutil.rmtree(tracking_dir)
+                    print("Tracking directory deleted.")
+        except Exception as e:
+            print(f"Warning: failed to delete tracking directory: {e}")
+
+    no_user = {"user_exists": False, "user_name": "", "password": ""}
+    _write_user_info(no_user)
+    print("Logged out and user data cleared.")
+
+
+def update_user(update_field: str):
+    if update_field not in ("--username", "--password"):
         print("Invalid input!")
-        help()
-    if update == "--username":
-        confirmation = input("Are you sure you want to change your username(y/n)?").lower()
-        if confirmation != "y" or "n":
-            print("Please respond with y/Y or n/N")
-            update_user(update)
-        if confirmation == "n":
+        show_help()
+        return
+    data = _load_user_info()
+    if not data.get("user_exists"):
+        print("No user set. Run 'setup login' to create an account.")
+        return
+
+    if update_field == "--username":
+        new_username = input("Enter new username: ").strip()
+        if len(new_username) < 4:
+            print("Username must be at least 4 characters long")
             return
-        if confirmation == "y":
-            user_info = {
-                "user_exists" : "true",
-                "user_name" : update,
-                "password" : data_check["password"]
-            }
-            json.dump(user_info, data_check)
+        data["user_name"] = new_username
+        _write_user_info(data)
+        print("Username updated.")
+        return
+
+    if update_field == "--password":
+        new_password = input("Enter new password: ")
+        valid, msg = _validate_password(new_password)
+        if not valid:
+            print(msg)
             return
+        data["password"] = new_password
+        _write_user_info(data)
+        print("Password updated.")
+        return
