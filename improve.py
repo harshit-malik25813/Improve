@@ -2,7 +2,7 @@
 import argparse
 import json
 from pathlib import Path
-from src import helpers, add_project, setup as setup_mod
+from src import helpers, add_project, setup as setup_mod, project as project_mod
 from src.help import show_help, commands
 
 
@@ -32,9 +32,31 @@ def main():
 	help_parser = subparsers.add_parser("help")
 	help_parser.add_argument("--commands", action="store_true")
 
-	# add-project
+	# add-project (legacy) - kept for backward compatibility
 	addp = subparsers.add_parser("add-project")
 	addp.add_argument("project_name")
+
+	# project management group
+	project_parser = subparsers.add_parser("project")
+	project_sub = project_parser.add_subparsers(dest="proj_cmd")
+	project_sub.add_parser("list")
+	create = project_sub.add_parser("create")
+	create.add_argument("project_name")
+	add_entry = project_sub.add_parser("add-entry")
+	add_entry.add_argument("project_name")
+	add_entry.add_argument("--day", default="")
+	add_entry.add_argument("--date", default="")
+	add_entry.add_argument("--progress", default="")
+	add_entry.add_argument("--productivity", default="")
+	add_entry.add_argument("--feedback", default="")
+	feedback = project_sub.add_parser("feedback")
+	feedback.add_argument("project_name")
+	feedback.add_argument("--last", type=int, default=5)
+	show = project_sub.add_parser("show")
+	show.add_argument("project_name")
+	show.add_argument("--last", type=int, default=10)
+	delete = project_sub.add_parser("delete")
+	delete.add_argument("project_name")
 
 	# export
 	subparsers.add_parser("export")
@@ -66,7 +88,25 @@ def main():
 		return
 
 	if args.command == "add-project":
-		add_project.include(args.project_name)
+		# legacy behavior: create project CSV
+		project_mod.create_project(args.project_name)
+		return
+
+	if args.command == "project":
+		if args.proj_cmd == "list":
+			project_mod.list_projects()
+		elif args.proj_cmd == "create":
+			project_mod.create_project(args.project_name)
+		elif args.proj_cmd == "add-entry":
+			project_mod.add_entry(args.project_name, day=args.day, date=args.date, progress=args.progress, productivity=args.productivity, feedback=args.feedback)
+		elif args.proj_cmd == "feedback":
+			project_mod.get_feedback(args.project_name, last=args.last)
+		elif args.proj_cmd == "show":
+			project_mod.show_project(args.project_name, last=args.last)
+		elif args.proj_cmd == "delete":
+			project_mod.delete_project(args.project_name)
+		else:
+			show_help()
 		return
 
 	if args.command == "export":
