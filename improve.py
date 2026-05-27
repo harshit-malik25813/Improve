@@ -32,11 +32,11 @@ def main():
 	help_parser = subparsers.add_parser("help")
 	help_parser.add_argument("--commands", action="store_true")
 
-	# add-project (legacy) - kept for backward compatibility
+	# add-project (legacy) - kept for backward compatibility as the feature has been integrated with project command
 	addp = subparsers.add_parser("add-project")
 	addp.add_argument("project_name")
 
-	# project management group
+	# project management group(improved)
 	project_parser = subparsers.add_parser("project")
 	project_sub = project_parser.add_subparsers(dest="proj_cmd")
 	project_sub.add_parser("list")
