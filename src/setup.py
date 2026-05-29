@@ -120,7 +120,7 @@ def logout():
     _write_user_info(no_user)
     print("Logged out and user data cleared.")
 
-
+# To update user data
 def update_user(update_field: str):
     if update_field not in ("--username", "--password"):
         print("Invalid input!")
