@@ -1,40 +1,45 @@
 """Improve CLI"""
-import argparse
-import json
-from pathlib import Path
-from src import helpers, add_project, setup as setup_mod, project as project_mod
-from src.help import show_help, commands
+"""Developed by: harshit-malik25813"""
+"""Open Sourced on GitHub"""
+"""https://github.com/harshit-malik25813/Improve"""
+import argparse # To include the functionality of parsing the arguements
+import json # To Read JSON file containing the user data
+from pathlib import Path # To locate the path of essential tracking data
+# Essential helper functions imported
+from src import helpers, add_project, setup as setup_mod, project as project_mod 
+from src.help import show_help, commands 
 
-
+# User tracking path
 USER_FILE = Path("tracking") / "user_info.json"
 
-
+# Internal function to load user data and return it
 def _load_user():
 	if USER_FILE.exists():
 		with USER_FILE.open("r", encoding="utf-8") as f:
 			return json.load(f)
 	return {"user_exists": False, "user_name": "", "password": ""}
 
-
+# Main program
 def main():
-	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI")
+	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI") # Initiate parsing of arguements
+	# Allow subparsers in the program
 	subparsers = parser.add_subparsers(dest="command")
 
-	# setup
-	setup_parser = subparsers.add_parser("setup")
-	setup_sub = setup_parser.add_subparsers(dest="setup_cmd")
-	setup_sub.add_parser("login")
-	setup_sub.add_parser("logout")
-	update_parser = setup_sub.add_parser("update_user")
-	update_parser.add_argument("update_field", choices=["--username", "--password"]) 
+	# setup arguments
+	setup_parser = subparsers.add_parser("setup") # Setup parser
+	setup_sub = setup_parser.add_subparsers(dest="setup_cmd") # Refer to setup subarguments as 'setup_cmd'
+	setup_sub.add_parser("--login") # Login subargument
+	setup_sub.add_parser("--logout") # Logout subargument
+	update_parser = setup_sub.add_parser("update_user") # Update user subargument
+	update_parser.add_argument("update_field", choices=["--username", "--password"]) # Available arguments for update_user
 
-	# help
-	help_parser = subparsers.add_parser("help")
-	help_parser.add_argument("--commands", action="store_true")
+	# help arguments
+	help_parser = subparsers.add_parser("help") # Help parser
+	help_parser.add_argument("--commands", action="store_true") # To list commands
 
 	# add-project (legacy) - kept for backward compatibility as the feature has been integrated with project command
-	addp = subparsers.add_parser("add-project")
-	addp.add_argument("project_name")
+	addp = subparsers.add_parser("add-project") # add-project argument
+	addp.add_argument("project_name") # Project name
 
 	# project management group(improved)
 	project_parser = subparsers.add_parser("project")
@@ -63,21 +68,21 @@ def main():
 
 	args = parser.parse_args()
 
-	user_info = _load_user()
-	if not user_info.get("user_exists"):
-		helpers.first_time()
+	user_info = _load_user() # Load user data
+	if not user_info.get("user_exists"): # If the user data doesn't exist
+		helpers.first_time() # Initiate the script to invite user for the first time
 	else:
 		print(f"Welcome back!, {user_info.get('user_name')}")
 
-	if args.command == "setup":
-		if args.setup_cmd == "login":
+	if args.command == "setup": # If user enters setup
+		if args.setup_cmd == "--login": # For login
 			setup_mod.login()
-		elif args.setup_cmd == "logout":
+		elif args.setup_cmd == "--logout": # For logout
 			setup_mod.logout()
-		elif args.setup_cmd == "update_user":
-			setup_mod.update_user(args.update_field)
+		elif args.setup_cmd == "update_user": # For updating user
+			setup_mod.update_user(args.update_field) # Provides the fields the user has asked to update
 		else:
-			show_help()
+			show_help() # If user enters anything unexpected
 		return
 
 	if args.command == "help":
