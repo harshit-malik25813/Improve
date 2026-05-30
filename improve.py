@@ -21,6 +21,7 @@ def _load_user():
 
 # Main program
 def main():
+	# Adding argument parsers
 	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI") # Initiate parsing of arguements
 	# Allow subparsers in the program
 	subparsers = parser.add_subparsers(dest="command")
@@ -96,7 +97,7 @@ def main():
 		# legacy behavior: create project CSV
 		project_mod.create_project(args.project_name) # Use the create project function in place of add_project.py
 		return
-
+	# Project functions
 	if args.command == "project":
 		if args.proj_cmd == "list":
 			project_mod.list_projects()
@@ -113,14 +114,13 @@ def main():
 		else:
 			show_help()
 		return
-
+	# Export functions
 	if args.command == "export":
 		from src.export import export_data
 		export_data()
 		return
-
+	# if invalid
 	parser.print_help()
-
-
+# Initialise the function
 if __name__ == "__main__":
 	main()
