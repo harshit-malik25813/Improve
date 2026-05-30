@@ -1,15 +1,15 @@
-**Improve — CLI Project Tracker**
+# **Improve — CLI Project Tracker**
 
 Improve is a small, single-file CLI application (with supporting modules under `src/`) to help you track progress on projects using CSV-backed project logs. It provides simple user setup, per-project CSV tracking, quick reporting and export functionality.
 
-**Features**
+## **Features**
 - **User setup:** create, update, and logout a local user account (`setup` commands).
 - **Project management:** create, list, delete projects and add daily entries (`project` commands).
 - **Entry tracking:** each project is stored as a CSV under `tracking/` with columns Day, Date, Progress, Productivity Level, Feedback.
 - **Feedback & view:** fetch recent feedback entries or show recent rows for a project.
 - **Export:** copy all tracking CSV files to a `backup/` folder.
 
-**Quick Links**
+### **Quick Links**
 - Main CLI entry: [improve.py](improve.py)
 - Core project logic: [src/project.py](src/project.py)
 - User/setup utilities: [src/setup.py](src/setup.py)
@@ -17,11 +17,11 @@ Improve is a small, single-file CLI application (with supporting modules under `
 - First-run helper text: [src/helpers.py](src/helpers.py)
 - Legacy project helper: [src/add_project.py](src/add_project.py)
 
-**Requirements**
+## **Requirements**
 - Python 3.9+ (`requires-python` in [pyproject.toml](pyproject.toml); uses standard library features such as `dataclasses` and `pathlib`).
 - No third-party runtime dependencies. The package is defined in [pyproject.toml](pyproject.toml); [requirements.txt](requirements.txt) only lists standard-library modules for reference and is not used by pip.
 
-**Install with pip**
+## **Install with pip**
 
 From a clone of this repository (recommended: use a virtual environment):
 
@@ -45,7 +45,7 @@ Install a built wheel without cloning:
 pip install dist/improve_cli-0.1.0-py3-none-any.whl
 ```
 
-**Build from source**
+## **Build from source**
 
 Build sdist and wheel artifacts into `dist/` (requires [build](https://pypi.org/project/build/) once per environment):
 
@@ -66,7 +66,7 @@ Install the wheel locally:
 pip install dist/improve_cli-0.1.0-py3-none-any.whl
 ```
 
-**Run without installing**
+## **Run without installing**
 
 Clone the repo, create a venv if you like, and invoke the entry module directly:
 
@@ -74,7 +74,7 @@ Clone the repo, create a venv if you like, and invoke the entry module directly:
 python improve.py --help
 ```
 
-**Running the CLI**
+## **Running the CLI**
 - Basic help:
 
 ```bash
@@ -139,6 +139,4 @@ improve export
 - Rebuild distributables with `python -m build` after packaging changes.
 - The codebase is small and intended as a learning/demo project. Contributions or issues can be opened against the original upstream repository referenced in the code comments.
 
-**License**
-- This repository does not include a license file. Check the original upstream project before reusing code in production.
 
