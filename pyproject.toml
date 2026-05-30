@@ -1,6 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "improve-cli"
 version = "0.1.0"
+description = "CLI project tracker with CSV-backed logs"
+readme = "README.md"
+requires-python = ">=3.9"
 
 [project.scripts]
-improve = "improve.py:main"
+improve = "improve:main"
+
+[tool.setuptools]
+py-modules = ["improve"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
