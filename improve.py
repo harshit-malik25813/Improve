@@ -27,16 +27,18 @@ def main():
 	subparsers = parser.add_subparsers(dest="command")
 
 	# setup arguments
-	setup_parser = subparsers.add_parser("setup") # Setup parser
-	setup_sub = setup_parser.add_subparsers(dest="setup_cmd") # Refer to setup subarguments as 'setup_cmd'
-	setup_sub.add_parser("--login") # Login subargument
-	setup_sub.add_parser("--logout") # Logout subargument
-	update_parser = setup_sub.add_parser("update_user") # Update user subargument
-	update_parser.add_argument("update_field", choices=["--username", "--password"]) # Available arguments for update_user
+	setup_parser = subparsers.add_parser("setup", help="Manage your local user account")
+	setup_sub = setup_parser.add_subparsers(dest="setup_cmd", required=True)
+	setup_sub.add_parser("login", help="Create or sign in to your local account")
+	setup_sub.add_parser("logout", help="Sign out and clear local user data")
+	update_parser = setup_sub.add_parser("update", help="Update username or password")
+	update_group = update_parser.add_mutually_exclusive_group(required=True)
+	update_group.add_argument("--username", action="store_true", help="Change username")
+	update_group.add_argument("--password", action="store_true", help="Change password")
 
-	# help arguments
-	help_parser = subparsers.add_parser("--help") # Help parser
-	help_parser.add_argument("--commands", action="store_true") # To list commands
+	# help (use "help" not "--help"; argparse reserves --help for usage)
+	help_parser = subparsers.add_parser("help", help="Show help or list commands")
+	help_parser.add_argument("--commands", action="store_true", help="List all commands")
 
 	# add-project (legacy) - kept for backward compatibility as the feature has been integrated with project command
 	addp = subparsers.add_parser("add-project") # add-project argument
@@ -75,21 +77,22 @@ def main():
 	else:
 		print(f"Welcome back!, {user_info.get('user_name')}")
 
-	if args.command == "setup": # If user enters setup
-		if args.setup_cmd == "--login": # For login
+	if args.command == "setup":
+		if args.setup_cmd == "login":
 			setup_mod.login()
-		elif args.setup_cmd == "--logout": # For logout
+		elif args.setup_cmd == "logout":
 			setup_mod.logout()
-		elif args.setup_cmd == "update_user": # For updating user
-			setup_mod.update_user(args.update_field) # Provides the fields the user has asked to update
-		else:
-			show_help() # If user enters anything unexpected
+		elif args.setup_cmd == "update":
+			if args.username:
+				setup_mod.update_user("username")
+			else:
+				setup_mod.update_user("password")
 		return
 
-	if args.command == "--help": # If user enters help
-		if args.commands: # If person specifially asks to list commands
+	if args.command == "help":
+		if args.commands:
 			commands()
-		else:# Just show the help page
+		else:
 			show_help()
 		return
 

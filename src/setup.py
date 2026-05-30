@@ -51,9 +51,8 @@ def login():
     print("User Account not set")
     # Get user confirmation
     ans = input("Do you want to set a user? (y/n): ").strip().lower()
-    if ans != "y" or "n":
-        print("Invalid Input!")
-        login()
+    if ans not in ("y", "n"):
+        print("Invalid input. Please enter y or n.")
         return
     if ans == "n":
         print("Aborting user setup")
@@ -121,17 +120,17 @@ def logout():
     print("Logged out and user data cleared.")
 
 # To update user data
-def update_user(update_field: str):
-    if update_field not in ("--username", "--password"):
+def update_user(field: str):
+    if field not in ("username", "password"):
         print("Invalid input!")
         show_help()
         return
     data = _load_user_info()
     if not data.get("user_exists"):
-        print("No user set. Run 'setup login' to create an account.")
+        print("No user set. Run 'improve setup login' to create an account.")
         return
 
-    if update_field == "--username":
+    if field == "username":
         new_username = input("Enter new username: ").strip()
         if len(new_username) < 4:
             print("Username must be at least 4 characters long")
@@ -141,7 +140,7 @@ def update_user(update_field: str):
         print("Username updated.")
         return
 
-    if update_field == "--password":
+    if field == "password":
         new_password = input("Enter new password: ")
         valid, msg = _validate_password(new_password)
         if not valid:
