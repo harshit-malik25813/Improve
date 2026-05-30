@@ -27,10 +27,13 @@ def list_projects() -> List[str]:
 # Function to create a project
 
 def create_project(name: str) -> Path:
+    # Path to project file
     path = _project_file(name)
+    # If the user has already created a project with this name before
     if path.exists():
         print(f"Project '{name}' already exists at {path}")
         return path
+    # Create the basic structure of the project in the
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(HEADER)
