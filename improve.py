@@ -6,7 +6,7 @@ import argparse # To include the functionality of parsing the arguements
 import json # To Read JSON file containing the user data
 from pathlib import Path # To locate the path of essential tracking data
 # Essential helper functions imported
-from src import helpers, add_project, setup as setup_mod, project as project_mod 
+from src import helpers, setup as setup_mod, project as project_mod 
 from src.help import show_help, commands 
 
 # User tracking path
@@ -34,7 +34,7 @@ def main():
 	update_parser.add_argument("update_field", choices=["--username", "--password"]) # Available arguments for update_user
 
 	# help arguments
-	help_parser = subparsers.add_parser("help") # Help parser
+	help_parser = subparsers.add_parser("--help") # Help parser
 	help_parser.add_argument("--commands", action="store_true") # To list commands
 
 	# add-project (legacy) - kept for backward compatibility as the feature has been integrated with project command
@@ -85,16 +85,16 @@ def main():
 			show_help() # If user enters anything unexpected
 		return
 
-	if args.command == "help":
-		if args.commands:
+	if args.command == "--help": # If user enters help
+		if args.commands: # If person specifially asks to list commands
 			commands()
-		else:
+		else:# Just show the help page
 			show_help()
 		return
 
-	if args.command == "add-project":
+	if args.command == "add-project": # Legacy function to create the project
 		# legacy behavior: create project CSV
-		project_mod.create_project(args.project_name)
+		project_mod.create_project(args.project_name) # Use the create project function in place of add_project.py
 		return
 
 	if args.command == "project":
