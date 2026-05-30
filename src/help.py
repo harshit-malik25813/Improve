@@ -5,4 +5,4 @@ def show_help():
 
 
 def commands():
-    print("Available commands:\n - setup login\n - setup logout\n - setup update_user --username|--password\n - add-project <name>\n - export")
+    print("Available commands:\n - setup --login\n - setup --logout\n - setup update_user --username|--password\n - add-project <name>\n - export")

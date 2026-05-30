@@ -1,6 +1,2 @@
-json
-dataclass
-argparse
-shutil
-pathlib
-csv
+# This project has no third-party runtime dependencies.
+# Install the package itself with: pip install .

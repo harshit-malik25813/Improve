@@ -22,21 +22,20 @@ def _load_user():
 # Main program
 def main():
 	# Adding argument parsers
-	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI") # Initiate parsing of arguements
+	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI", add_help=False) # Initiate parsing of arguements
+	parser.add_argument("-h", "--help", action="store_true")
+	parser.add_argument("--commands", action="store_true")
 	# Allow subparsers in the program
 	subparsers = parser.add_subparsers(dest="command")
 
 	# setup arguments
 	setup_parser = subparsers.add_parser("setup") # Setup parser
+	setup_parser.add_argument("--login", action="store_true") # Login argument
+	setup_parser.add_argument("--logout", action="store_true") # Logout argument
 	setup_sub = setup_parser.add_subparsers(dest="setup_cmd") # Refer to setup subarguments as 'setup_cmd'
-	setup_sub.add_parser("--login") # Login subargument
-	setup_sub.add_parser("--logout") # Logout subargument
 	update_parser = setup_sub.add_parser("update_user") # Update user subargument
-	update_parser.add_argument("update_field", choices=["--username", "--password"]) # Available arguments for update_user
-
-	# help arguments
-	help_parser = subparsers.add_parser("--help") # Help parser
-	help_parser.add_argument("--commands", action="store_true") # To list commands
+	update_parser.add_argument("--username", action="store_true")
+	update_parser.add_argument("--password", action="store_true")
 
 	# add-project (legacy) - kept for backward compatibility as the feature has been integrated with project command
 	addp = subparsers.add_parser("add-project") # add-project argument
@@ -76,18 +75,23 @@ def main():
 		print(f"Welcome back!, {user_info.get('user_name')}")
 
 	if args.command == "setup": # If user enters setup
-		if args.setup_cmd == "--login": # For login
+		if getattr(args, "login", False): # For login
 			setup_mod.login()
-		elif args.setup_cmd == "--logout": # For logout
+		elif getattr(args, "logout", False): # For logout
 			setup_mod.logout()
 		elif args.setup_cmd == "update_user": # For updating user
-			setup_mod.update_user(args.update_field) # Provides the fields the user has asked to update
+			if getattr(args, "username", False):
+				setup_mod.update_user("--username")
+			elif getattr(args, "password", False):
+				setup_mod.update_user("--password")
+			else:
+				show_help()
 		else:
 			show_help() # If user enters anything unexpected
 		return
 
-	if args.command == "--help": # If user enters help
-		if args.commands: # If person specifially asks to list commands
+	if getattr(args, "help", False): # If user enters help
+		if getattr(args, "commands", False): # If person specifially asks to list commands
 			commands()
 		else:# Just show the help page
 			show_help()
