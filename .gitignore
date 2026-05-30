@@ -117,3 +117,6 @@ coverage/
 # Ignoring test CSV files
 *.CSV
 *.csv
+# Stops tracking folder to be included in the git repository
+tracking/*
+backup/*
