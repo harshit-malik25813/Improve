@@ -85,7 +85,20 @@ improve --help
 - Setup a user account (interactive):
 
 ```bash
-improve setup --login
+improve setup login
+```
+
+- Sign out and clear local user data:
+
+```bash
+improve setup logout
+```
+
+- Update username or password:
+
+```bash
+improve setup update --username
+improve setup update --password
 ```
 
 - Create a project:
