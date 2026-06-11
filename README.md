@@ -22,6 +22,11 @@ Improve is a small, single-file CLI application (with supporting modules under `
 - No third-party runtime dependencies. The package is defined in [pyproject.toml](pyproject.toml); [requirements.txt](requirements.txt) only lists standard-library modules for reference and is not used by pip.
 
 ## **Install with pip**
+Firstly, make sure pip is updated and present in PATH
+
+```bash
+pip install improve-cli
+```
 
 From a clone of this repository (recommended: use a virtual environment):
 
