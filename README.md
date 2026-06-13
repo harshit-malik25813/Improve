@@ -28,7 +28,7 @@ Firstly, make sure pip is updated and present in PATH
 pip install improve-cli
 ```
 
-From a clone of this repository (recommended: use a virtual environment):
+**From a clone of this repository (recommended: use a virtual environment):**
 
 ```bash
 python3 -m venv .venv
@@ -42,12 +42,6 @@ For local development (changes to `improve.py` or `src/` apply without reinstall
 
 ```bash
 pip install -e .
-```
-
-Install a built wheel without cloning:
-
-```bash
-pip install dist/improve_cli-0.1.0-py3-none-any.whl
 ```
 
 ## **Build from source**
@@ -156,5 +150,8 @@ improve export
 - Use `pip install -e .` and run `improve`, or run `python improve.py` without installing.
 - Rebuild distributables with `python -m build` after packaging changes.
 - The codebase is small and intended as a learning/demo project. Contributions or issues can be opened against the original upstream repository referenced in the code comments.
+
+### License
+This project is licensed under MIT License.
 
 
