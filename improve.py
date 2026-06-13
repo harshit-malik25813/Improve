@@ -4,6 +4,7 @@
 """https://github.com/harshit-malik25813/Improve"""
 import argparse # To include the functionality of parsing the arguements
 import json # To Read JSON file containing the user data
+from functools import lru_cache
 from pathlib import Path # To locate the path of essential tracking data
 # Essential helper functions imported
 from src import helpers, setup as setup_mod, project as project_mod 
@@ -11,6 +12,36 @@ from src.help import show_help, commands
 
 # User tracking path
 USER_FILE = Path("tracking") / "user_info.json"
+PROJECT_ROOT = Path(__file__).resolve().parent
+PYPROJECT_FILE = PROJECT_ROOT / "pyproject.toml"
+
+
+@lru_cache(maxsize=1)
+def _load_version():
+	try:
+		try:
+			import tomllib
+		except ModuleNotFoundError:
+			tomllib = None
+		if tomllib is not None:
+			with PYPROJECT_FILE.open("rb") as f:
+				data = tomllib.load(f)
+			return data["project"]["version"]
+		in_project_section = False
+		with PYPROJECT_FILE.open("r", encoding="utf-8") as f:
+			for raw_line in f:
+				line = raw_line.strip()
+				if not line or line.startswith("#"):
+					continue
+				if line.startswith("[") and line.endswith("]"):
+					in_project_section = line == "[project]"
+					continue
+				if in_project_section and line.startswith("version"):
+					_, value = line.split("=", 1)
+					return value.strip().strip('"').strip("'")
+		return "unknown"
+	except (FileNotFoundError, KeyError, ValueError, OSError):
+		return "unknown"
 
 # Internal function to load user data and return it
 def _load_user():
@@ -23,6 +54,7 @@ def _load_user():
 def main():
 	# Adding argument parsers
 	parser = argparse.ArgumentParser(prog="improve", description="Improve CLI") # Initiate parsing of arguements
+	parser.add_argument("--version", action="version", version=f"improve-cli {_load_version()}\nDeveloped by harshit-malik25813")
 	# Allow subparsers in the program
 	subparsers = parser.add_subparsers(dest="command")
 
