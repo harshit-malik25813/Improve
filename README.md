@@ -56,13 +56,13 @@ python -m build
 ```
 
 Outputs:
-- `dist/improve_cli-0.1.0.tar.gz` — source distribution
-- `dist/improve_cli-0.1.0-py3-none-any.whl` — installable wheel
+- `dist/improve_cli-0.2.1.tar.gz` — source distribution
+- `dist/improve_cli-0.2.1-py3-none-any.whl` — installable wheel
 
 Install the wheel locally:
 
 ```bash
-pip install dist/improve_cli-0.1.0-py3-none-any.whl
+pip install dist/improve_cli-0.2.1-py3-none-any.whl
 ```
 
 ## **Run without installing**
